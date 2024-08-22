@@ -1,13 +1,14 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:movies/config/routes/routes.dart';
 import 'package:movies/constants/colors_cons.dart';
 import 'package:movies/core/functions/image_path.dart';
 import 'package:movies/features/movies/domain/entities/movie_details.dart';
 import 'package:movies/features/movies/presentation/manger/movie_bloc/movie_bloc.dart';
 import 'package:movies/features/movies/presentation/manger/movie_bloc/movie_state.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../manger/expand_text/expand_text_cubit.dart';
 
@@ -29,12 +30,11 @@ class MovieDetailsBody extends StatelessWidget {
             // Blurred Background Image
             Positioned.fill(
               child: ImageFiltered(
-                imageFilter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                child: Image.network(
-                  imagePath(movieDetails!.posterPath!),
-                  fit: BoxFit.cover,
-                ),
-              ),
+                  imageFilter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: CachedNetworkImage(
+                    imageUrl: imagePath(movieDetails!.posterPath!),
+                    fit: BoxFit.cover,
+                  )),
             ),
             // Movie Image
             Align(
@@ -44,8 +44,8 @@ class MovieDetailsBody extends StatelessWidget {
                   child: Stack(children: [
                     ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.network(
-                          imagePath(movieDetails!.posterPath!),
+                        child: CachedNetworkImage(
+                          imageUrl: imagePath(movieDetails!.posterPath!),
                           width: MediaQuery.of(context).size.width * 0.9,
                           height: MediaQuery.of(context).size.height * 0.4,
                           fit: BoxFit.fill,
@@ -62,19 +62,20 @@ class MovieDetailsBody extends StatelessWidget {
                             color: Colors.white,
                           ),
                         )),
-                    Positioned(
-                        top: 10,
-                        right: 10,
-                        child: IconButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, Routes.webView,
-                                arguments: movieDetails!.homepage);
-                          },
-                          icon: const Icon(
-                            Icons.share,
-                            color: Colors.white,
-                          ),
-                        ))
+                    movieDetails!.homepage != null
+                        ? Positioned(
+                            top: 10,
+                            right: 10,
+                            child: IconButton(
+                              onPressed: () {
+                                Share.share(movieDetails!.homepage!);
+                              },
+                              icon: const Icon(
+                                Icons.share,
+                                color: Colors.white,
+                              ),
+                            ))
+                        : const SizedBox(),
                   ])),
             ),
             // More Info Tile
@@ -124,7 +125,7 @@ class MovieDetailsBody extends StatelessWidget {
                               movieDetails!.overview ??
                                   "Overview not available.",
                               style: Theme.of(context).textTheme.labelLarge,
-                              maxLines: isExpended ? 15 : 3,
+                              maxLines: isExpended ? 10 : 3,
                             ),
                             Align(
                               alignment: Alignment.bottomRight,

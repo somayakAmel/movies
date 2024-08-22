@@ -5,9 +5,10 @@ import '../../domain/entities/movie.dart';
 import '../../domain/entities/movie_details.dart';
 
 abstract class MoviesLocalDatasource {
-  List<MovieEntity> getNowPlaying();
-  List<MovieEntity> getUpcomingMovies();
-  List<MovieEntity> getPopularMovies();
+  List<MovieEntity> getMovies(
+    String hiveConst,
+  );
+
   MovieDetailsEntity? getMovie(int id);
 }
 
@@ -22,20 +23,8 @@ class MoviesLocalDatasourceImpl implements MoviesLocalDatasource {
   }
 
   @override
-  List<MovieEntity> getNowPlaying() {
-    var box = Hive.box(HiveBoxCons.nowPlayingMoviesBox);
-    return box.values.toList().cast<MovieEntity>();
-  }
-
-  @override
-  List<MovieEntity> getPopularMovies() {
-    var box = Hive.box(HiveBoxCons.popularMoviesBox);
-    return box.values.toList().cast<MovieEntity>();
-  }
-
-  @override
-  List<MovieEntity> getUpcomingMovies() {
-    var box = Hive.box(HiveBoxCons.upcomingMoviesBox);
+  List<MovieEntity> getMovies(String hiveConst) {
+    var box = Hive.box(hiveConst);
     return box.values.toList().cast<MovieEntity>();
   }
 }

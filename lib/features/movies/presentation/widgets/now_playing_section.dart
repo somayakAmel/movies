@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movies/constants/colors_cons.dart';
 
 import '../manger/movie_bloc/movie_bloc.dart';
 import '../manger/movie_bloc/movie_state.dart';
@@ -13,6 +14,7 @@ class NowPlayingSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pageController = PageController(viewportFraction: 0.8);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: BlocBuilder<MovieBloc, MovieState>(
@@ -23,17 +25,18 @@ class NowPlayingSection extends StatelessWidget {
         builder: (context, state) {
           if (state is NowPlayingMovieLoaded) {
             return SizedBox(
-              height: 200,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: state.movies.length,
-                itemBuilder: (context, index) {
-                  return NowPlayingMovieCard(
-                    movie: state.movies[index],
-                  );
-                },
-              ),
-            );
+                height: 200,
+                child: PageView.builder(
+                    controller: pageController,
+                    itemCount: state.movies.length,
+                    itemBuilder: (context, index) {
+                      final item = state.movies[index];
+                      return AnimatedBuilder(
+                          animation: pageController,
+                          builder: (context, child) {
+                            return NowPlayingMovieCard(movie: item);
+                          });
+                    }));
           } else {
             return SizedBox(
               height: 200,
@@ -43,8 +46,8 @@ class NowPlayingSection extends StatelessWidget {
                 itemCount: 6,
                 itemBuilder: (context, index) {
                   return Shimmer.fromColors(
-                      baseColor: Colors.grey[500]!,
-                      highlightColor: Colors.grey[400]!,
+                      baseColor: ColorsCons.shimmerBaseColor,
+                      highlightColor: ColorsCons.shimmerHighlightColor,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16.0, vertical: 8.0),

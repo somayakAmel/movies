@@ -1,31 +1,18 @@
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:movies/core/api/api_consumer.dart';
-import 'package:movies/features/movies/data/models/movieDetailsModel.dart';
-import 'package:movies/features/movies/data/models/movieModel.dart';
 import 'package:movies/features/movies/domain/entities/movie_details.dart';
-
-import '../../../../constants/hive_box_cons.dart';
-import '../../../../core/api/endpoints.dart';
-import '../../../../core/functions/save_box.dart';
 import '../../domain/entities/movie.dart';
+import '../models/movieDetailsModel.dart';
+import '../models/movieModel.dart';
 
 abstract class MoviesRemoteDatasource {
-  Future<List<MovieEntity>> getNowPlaying();
-  Future<List<MovieEntity>> getUpcomingMovies();
-  Future<List<MovieEntity>> getPopularMovies();
+  Future<List<MovieEntity>> getMovies(String endpoint);
+
   Future<MovieDetailsEntity> getMovie(int id);
 }
 
 class MoviesRemoteDatasourceImpl implements MoviesRemoteDatasource {
   final ApiConsumer apiConsumer;
   MoviesRemoteDatasourceImpl(this.apiConsumer);
-
-  @override
-  Future<List<MovieEntity>> getNowPlaying() async {
-    final response = await apiConsumer.getData(Endpoints.nowPlaying);
-
-    return convertToList(response, HiveBoxCons.nowPlayingMoviesBox);
-  }
 
   @override
   Future<MovieDetailsEntity> getMovie(int id) async {
@@ -35,25 +22,18 @@ class MoviesRemoteDatasourceImpl implements MoviesRemoteDatasource {
   }
 
   @override
-  Future<List<MovieEntity>> getPopularMovies() async {
-    final response = await apiConsumer.getData(Endpoints.popularMovies);
-    return convertToList(response, HiveBoxCons.popularMoviesBox);
+  Future<List<MovieEntity>> getMovies(String endpoint) async {
+    final response = await apiConsumer.getData(endpoint);
+    return convertToList(response);
   }
 
-  @override
-  Future<List<MovieEntity>> getUpcomingMovies() async {
-    final response = await apiConsumer.getData(Endpoints.upcomingMovies);
-    return convertToList(response, HiveBoxCons.upcomingMoviesBox);
-  }
-
-  List<MovieEntity> convertToList(response, String boxName) {
+  List<MovieEntity> convertToList(response) {
     List<MovieEntity> movies = [];
     for (var movie in response.data['results']) {
       MovieEntity movieModel = MovieModel.fromJson(movie);
       movies.add(movieModel);
     }
 
-    saveBox(movies, boxName);
     return movies;
   }
 }

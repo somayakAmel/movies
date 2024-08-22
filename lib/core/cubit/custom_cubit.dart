@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CustomCubit<T> extends Cubit<T> {
+  // ignore: use_super_parameters
   CustomCubit(T initState) : super(initState);
 
   static CustomCubit<T> get<T>(context) =>

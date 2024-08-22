@@ -13,4 +13,9 @@ class ExpandTextCubit extends Cubit<ExpandTextState> {
     isExpended = !isExpended;
     emit(ExpandTextSuccess(isExpended: isExpended));
   }
+
+  void reset() {
+    isExpended = false;
+    emit(ExpandTextSuccess(isExpended: isExpended));
+  }
 }

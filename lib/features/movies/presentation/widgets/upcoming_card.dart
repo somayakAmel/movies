@@ -1,10 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../config/routes/routes.dart';
 import '../../../../core/functions/image_path.dart';
 import '../../domain/entities/movie.dart';
-import '../manger/movie_bloc/movie_bloc.dart';
-import '../manger/movie_bloc/movie_events.dart';
 
 class UpcomingCard extends StatelessWidget {
   const UpcomingCard({
@@ -19,8 +18,8 @@ class UpcomingCard extends StatelessWidget {
       padding: const EdgeInsets.only(right: 16.0),
       child: InkWell(
         onTap: () {
-          MovieBloc.get(context).add(GetMovie(id: movie.id));
-          Navigator.pushNamed(context, Routes.movieDetails);
+          Navigator.pushNamed(context, Routes.movieDetails,
+              arguments: movie.id);
         },
         child: Stack(
           children: [
@@ -29,11 +28,10 @@ class UpcomingCard extends StatelessWidget {
               width: 300,
               child: ClipRRect(
                 borderRadius: const BorderRadius.all(Radius.circular(20)),
-                child: Image(
-                  image: NetworkImage(
-                    imagePath(movie.backdropPath),
-                  ),
+                child: CachedNetworkImage(
+                  imageUrl: imagePath(movie.posterPath),
                   fit: BoxFit.cover,
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
               ),
             ),

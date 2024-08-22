@@ -6,7 +6,6 @@ import '../config/routes/routes.dart';
 import '../config/routes/routes_manager.dart';
 import '../config/theme/dark_theme_data.dart';
 import '../features/movies/presentation/manger/movie_bloc/movie_bloc.dart';
-import '../features/movies/presentation/manger/movie_bloc/movie_events.dart';
 import 'service_locator.dart';
 
 class MyApp extends StatelessWidget {
@@ -22,10 +21,7 @@ class MyApp extends StatelessWidget {
                   diInstance(),
                   diInstance(),
                   dio: diInstance(),
-                )
-                  ..add((GetNowPlaying()))
-                  ..add(GetPopular())
-                  ..add(GetUpcoming())),
+                )),
         BlocProvider(create: (context) => ExpandTextCubit())
       ],
       child: MaterialApp(

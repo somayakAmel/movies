@@ -2,28 +2,32 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:movies/core/functions/image_path.dart';
-import 'package:movies/features/movies/domain/entities/movie.dart';
-import '../../../../config/routes/routes.dart';
+import 'package:movies/config/routes/routes.dart';
 
-class NowPlayingMovieCard extends StatelessWidget {
-  const NowPlayingMovieCard({
-    super.key,
-    required this.movie,
-  });
+import '../../../../core/functions/image_path.dart';
+import '../../domain/entities/movie.dart';
+
+class MovieCard extends StatelessWidget {
+  const MovieCard({super.key, required this.movie});
   final MovieEntity movie;
-
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Navigator.pushNamed(context, Routes.movieDetails, arguments: movie.id);
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SizedBox(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: InkWell(
+        onTap: () => Navigator.pushNamed(context, Routes.movieDetails,
+            arguments: movie.id),
+        child: Container(
           height: 200,
           width: 350,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                )
+              ]),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: Stack(
@@ -55,7 +59,19 @@ class NowPlayingMovieCard extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Left-side Content
+                    ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(20),
+                        bottomRight: Radius.circular(20),
+                      ),
+                      child: CachedNetworkImage(
+                        imageUrl: imagePath(movie.posterPath),
+                        height: 200,
+                        fit: BoxFit.cover,
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
+                      ),
+                    ),
                     Flexible(
                       flex: 3,
                       child: Padding(
@@ -63,30 +79,6 @@ class NowPlayingMovieCard extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              padding: const EdgeInsets.all(3),
-                              decoration: BoxDecoration(
-                                color: Colors.pink[50],
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.play_arrow,
-                                    color: Colors.red[500],
-                                  ),
-                                  Text(
-                                    "Now Playing  ",
-                                    style: TextStyle(
-                                      color: Colors.red[500],
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
                             const SizedBox(
                               height: 16,
                             ),
@@ -101,26 +93,12 @@ class NowPlayingMovieCard extends StatelessWidget {
                             ),
                             Text(
                               movie.overview,
-                              maxLines: 1,
+                              maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ],
                         ),
-                      ),
-                    ),
-                    // Right-side Image
-                    ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(20),
-                        bottomRight: Radius.circular(20),
-                      ),
-                      child: CachedNetworkImage(
-                        imageUrl: imagePath(movie.posterPath),
-                        height: 200,
-                        fit: BoxFit.cover,
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
                       ),
                     ),
                   ],

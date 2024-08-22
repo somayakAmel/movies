@@ -1,18 +1,16 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../config/routes/routes.dart';
 import '../../../../core/functions/image_path.dart';
 import '../../domain/entities/movie.dart';
-import '../manger/movie_bloc/movie_bloc.dart';
-import '../manger/movie_bloc/movie_events.dart';
 
 Padding popularMovieCard(BuildContext context, {required MovieEntity movie}) {
   return Padding(
     padding: const EdgeInsets.only(right: 16),
     child: InkWell(
       onTap: () {
-        MovieBloc.get(context).add(GetMovie(id: movie.id));
-        Navigator.pushNamed(context, Routes.movieDetails);
+        Navigator.pushNamed(context, Routes.movieDetails, arguments: movie.id);
       },
       child: SizedBox(
         width: 120,
@@ -20,14 +18,14 @@ Padding popularMovieCard(BuildContext context, {required MovieEntity movie}) {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Image.network(
-                imagePath(movie.posterPath),
-                height: 200,
-                width: 120,
-                fit: BoxFit.cover,
-              ),
-            ),
+                borderRadius: BorderRadius.circular(20),
+                child: CachedNetworkImage(
+                  imageUrl: imagePath(movie.posterPath),
+                  height: 200,
+                  width: 120,
+                  fit: BoxFit.cover,
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                )),
             const SizedBox(
               height: 8,
             ),

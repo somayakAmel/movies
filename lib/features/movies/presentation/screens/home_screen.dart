@@ -1,10 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:movies/features/movies/presentation/manger/movie_bloc/movie_events.dart';
+import '../manger/movie_bloc/movie_bloc.dart';
 import '../widgets/now_playing_section.dart';
 import '../widgets/popular_section.dart';
 import '../widgets/upcoming_section.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    MovieBloc.get(context).add(GetNowPlaying());
+    MovieBloc.get(context).add(GetPopular());
+    MovieBloc.get(context).add(GetUpcoming());
+  }
 
   @override
   Widget build(BuildContext context) {
