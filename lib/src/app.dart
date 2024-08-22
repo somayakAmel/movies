@@ -31,7 +31,6 @@ class MyApp extends StatelessWidget {
         themeMode: ThemeMode.dark,
         initialRoute: Routes.splashScreen,
         onGenerateRoute: RoutesManager.generateRoute,
-        home: const SplashScreen(),
       ),
     );
   }
