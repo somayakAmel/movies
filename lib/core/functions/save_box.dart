@@ -1,6 +1,11 @@
 import 'package:hive/hive.dart';
 
-void saveBox(data, boxName) {
+void saveBoxAsList(data, boxName) {
   var box = Hive.box(boxName);
   box.addAll(data);
+}
+
+void saveBoxAsMap(key, value, boxName) {
+  var box = Hive.box(boxName);
+  box.put(key, value);
 }

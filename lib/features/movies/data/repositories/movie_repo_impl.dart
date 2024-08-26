@@ -23,6 +23,8 @@ class MoviesRepositoryImpl implements MoviesRepository {
 
       if (isConnected) {
         final response = await remoteDatasource.getMovie(id);
+        saveBoxAsMap(id, response, HiveBoxCons.movieDetailsBox);
+
         return Left(response);
       } else {
         MovieDetailsEntity? movie = localDatasource.getMovie(id);
@@ -42,7 +44,7 @@ class MoviesRepositoryImpl implements MoviesRepository {
 
     if (isConnected) {
       final response = await remoteDatasource.getMovies(Endpoints.nowPlaying);
-      saveBox(response, HiveBoxCons.nowPlayingMoviesBox);
+      saveBoxAsList(response, HiveBoxCons.nowPlayingMoviesBox);
       return Left(response);
     } else {
       List<MovieEntity>? nowPlayingMovies =
@@ -58,7 +60,7 @@ class MoviesRepositoryImpl implements MoviesRepository {
     if (isConnected) {
       final response =
           await remoteDatasource.getMovies(Endpoints.popularMovies);
-      saveBox(response, HiveBoxCons.popularMoviesBox);
+      saveBoxAsList(response, HiveBoxCons.popularMoviesBox);
       return Left(response);
     } else {
       List<MovieEntity>? popularMovies = localDatasource.getMovies(
@@ -77,7 +79,7 @@ class MoviesRepositoryImpl implements MoviesRepository {
         Endpoints.upcomingMovies,
       );
 
-      saveBox(response, HiveBoxCons.upcomingMoviesBox);
+      saveBoxAsList(response, HiveBoxCons.upcomingMoviesBox);
       return Left(response);
     } else {
       List<MovieEntity>? upcomingMovies =
